@@ -252,18 +252,31 @@ class _GraphCalculatorClockState extends State<GraphCalculatorClock> {
     List<Widget> _createHoursGridChildren() {
       return new List<Widget>.generate(24, (int index) {
         return Container(
+          padding: EdgeInsets.all(4),
           decoration: BoxDecoration(
             color: _getHourTileBg(index),
             borderRadius: BorderRadius.all(Radius.circular(2)),
           ),
-          // padding: const EdgeInsets.all(8),
-          child: Center(
-            child: Text(
-              index.toString(),
-              style: TextStyle(color: _getHourTileFg(index)),
-            )
+          child: Column(
+            children: [
+              Expanded(
+                child: Align(
+                  alignment: Alignment.center,
+                  child: AutoSizeText.rich(
+                    TextSpan(
+                      text: index.toString(),
+                    ),
+                    minFontSize: 1,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: _getHourTileFg(index),
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
-          // color: _getHourTileBg(index),
         );
       });
     }
@@ -276,9 +289,6 @@ class _GraphCalculatorClockState extends State<GraphCalculatorClock> {
       childAspectRatio: (6 / 5.78),
       children: _createHoursGridChildren(),
     );
-
-    // const List<Choice> choices = const <Choice>[];
-
 
     return Container(
       width: MediaQuery.of(context).size.width,
@@ -390,9 +400,8 @@ class _GraphCalculatorClockState extends State<GraphCalculatorClock> {
                                               color: Color(0xFF866A5E),
                                               borderRadius: BorderRadius.all(Radius.circular(2))
                                             ),
-                                            // color: Color(0xFF866A5E),
                                             child: Row(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              crossAxisAlignment: CrossAxisAlignment.center,
                                               mainAxisAlignment: MainAxisAlignment.center,
                                               children: <Widget>[
                                                 Flexible(
@@ -428,16 +437,9 @@ class _GraphCalculatorClockState extends State<GraphCalculatorClock> {
                                                 ),
                                                 Spacer(flex: 1),
                                                 Flexible(
-                                                  flex: 38,
+                                                  flex: 40,
                                                   child: Container(
-                                                    // decoration: BoxDecoration(
-                                                    //   color: Color(0xFF654C35),
-                                                    //   borderRadius: BorderRadius.only(
-                                                    //     topRight: Radius.circular(2),
-                                                    //     bottomRight: Radius.circular(2),
-                                                    //   )
-                                                    // ),
-                                                    padding: EdgeInsets.symmetric(horizontal: 3),
+                                                    padding: EdgeInsets.only(left: 2, right: 2, top: 0.8),
                                                     color: Color(0xFF654C35),
                                                     child: Column(
                                                       children: [
@@ -451,10 +453,8 @@ class _GraphCalculatorClockState extends State<GraphCalculatorClock> {
                                                               minFontSize: 1,
                                                               textAlign: TextAlign.center,
                                                               style: TextStyle(
-                                                                fontFamily: 'Open Sans',
-                                                                fontSize: 100,
+                                                                fontSize: 200,
                                                                 color: Colors.white38,
-                                                                height: 1.1,
                                                               ),
                                                             ),
                                                           ),
@@ -465,7 +465,7 @@ class _GraphCalculatorClockState extends State<GraphCalculatorClock> {
                                                 ),
                                                 Spacer(flex: 1),
                                                 Flexible(
-                                                  flex: 62,
+                                                  flex: 64,
                                                   child: Container(
                                                     decoration: BoxDecoration(
                                                       color: Color(0xFF654C35),
@@ -474,7 +474,7 @@ class _GraphCalculatorClockState extends State<GraphCalculatorClock> {
                                                         bottomRight: Radius.circular(2),
                                                       )
                                                     ),
-                                                    padding: EdgeInsets.symmetric(horizontal: 2),
+                                                    padding: EdgeInsets.only(left: 2, right: 2, top: 1.5),
                                                     // color: Color(0xFF654C35),
                                                     child: Column(
                                                       children: [
@@ -488,10 +488,8 @@ class _GraphCalculatorClockState extends State<GraphCalculatorClock> {
                                                               minFontSize: 1,
                                                               textAlign: TextAlign.center,
                                                               style: TextStyle(
-                                                                fontFamily: 'Open Sans',
                                                                 fontSize: 100,
                                                                 color: Colors.white38,
-                                                                height: 1.1,
                                                               ),
                                                             ),
                                                           ),
