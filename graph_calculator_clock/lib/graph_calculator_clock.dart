@@ -8,48 +8,63 @@ import 'package:weather_icons/weather_icons.dart';
 
 
 enum _Element {
-  bgLeftPanel,
-  bgRightPanel,
-  bgBottomPanel,
+  bgMinute,
   bgSecond,
-  bgSecondDone,
+  bgSecondFuture,
+  bgCalcHeader,
+  bgCalcBody,
+  bgLcd,
+  bgSolar,
+  bgSolarDivider,
   bgHour,
-  bgHourDone,
-  bgHourActive,
-  textTime,
-  textDay,
-  textTemperature,
-  iconWeather,
+  bgHourCurrent,
+  bgHourFuture,
+  textDate,
+  textLcd,
+  textSolar,
+  textHour,
+  textHourCurrent,
+  textHourFuture,
 }
 
 final _lightTheme = {
-  _Element.bgLeftPanel: Colors.indigo,
-  _Element.bgRightPanel: Colors.indigo[100],
-  _Element.bgBottomPanel: Color(0xFFFFFFFF),
-  _Element.bgSecond: Colors.indigo[300],
-  _Element.bgSecondDone: Colors.deepOrange,
-  _Element.bgHour: Colors.green[100],
-  _Element.bgHourDone: Colors.green,
-  _Element.bgHourActive: Colors.indigo,
-  _Element.textTime: Colors.black,
-  _Element.textDay: Colors.black,
-  _Element.textTemperature: Colors.black,
-  _Element.iconWeather: Colors.amber,
+  _Element.bgMinute: Color(0xFF07B494),
+  _Element.bgSecond: Color(0xFF15C6A4),
+  _Element.bgSecondFuture: Color(0xFFAFEFE3),
+  _Element.bgCalcHeader: Color(0xFF151319),
+  _Element.bgCalcBody: Color(0xFFBABDC2),
+  _Element.bgLcd: Color(0xFF9DAA74),
+  _Element.bgSolar: Color(0xFF654C35),
+  _Element.bgSolarDivider: Color(0xFF866A5E),
+  _Element.bgHour: Color(0xFF878891),
+  _Element.bgHourCurrent: Color(0xFF07B494),
+  _Element.bgHourFuture: Color(0xFF303232),
+  _Element.textDate: Colors.white,
+  _Element.textLcd: Colors.black,
+  _Element.textSolar: Colors.white38,
+  _Element.textHour: Colors.white54,
+  _Element.textHourCurrent: Color(0xFFAFEFE3),
+  _Element.textHourFuture: Colors.white54,
 };
 
 final _darkTheme = {
-  _Element.bgLeftPanel: Colors.black,
-  _Element.bgRightPanel: Colors.indigo[100],
-  _Element.bgBottomPanel: Color(0xFFFFFFFF),
-  _Element.bgSecond: Colors.indigo[200],
-  _Element.bgSecondDone: Colors.indigo,
-  _Element.bgHour: Colors.green[100],
-  _Element.bgHourDone: Colors.green,
-  _Element.bgHourActive: Colors.indigo,
-  _Element.textTime: Colors.black,
-  _Element.textDay: Colors.black,
-  _Element.textTemperature: Colors.black,
-  _Element.iconWeather: Colors.amber,
+  _Element.bgMinute: Color(0xFF111111),
+  _Element.bgSecond: Color(0xFF0f977e),
+  _Element.bgSecondFuture: Color(0xFF1C1E1D),
+  _Element.bgCalcHeader: Color(0xFF151319),
+  _Element.bgCalcBody: Color(0xFF37353B),
+  _Element.bgLcd: Color(0xFF9DAA74),
+  _Element.bgSolar: Color(0xFF654C35),
+  _Element.bgSolarDivider: Color(0xFF866A5E),
+  _Element.bgHour: Color(0xFF57595B),
+  _Element.bgHourCurrent: Color(0xFF07B494),
+  _Element.bgHourFuture: Color(0xFF848492),
+  _Element.textDate: Colors.white,
+  _Element.textLcd: Colors.black,
+  _Element.textSolar: Colors.white38,
+  _Element.textHour: Colors.white24,
+  _Element.textHourCurrent: Color(0xFFAFEFE3),
+  _Element.textHourFuture: Colors.white60,
 };
 
 
@@ -66,7 +81,6 @@ class GraphCalculatorClock extends StatefulWidget {
 class _GraphCalculatorClockState extends State<GraphCalculatorClock> {
   DateTime _dateTime = DateTime.now();
   Timer _timer;
-
   var _temperature = '';
   var _temperatureRange = '';
   var _condition = '';
@@ -108,8 +122,6 @@ class _GraphCalculatorClockState extends State<GraphCalculatorClock> {
   void _updateTime() {
     setState(() {
       _dateTime = DateTime.now();
-      // Update once per second, but make sure to do it at the beginning of each
-      // new second, so that the clock is accurate.
       _timer = Timer(
         Duration(seconds: 1) - Duration(milliseconds: _dateTime.millisecond),
         _updateTime,
@@ -141,14 +153,10 @@ class _GraphCalculatorClockState extends State<GraphCalculatorClock> {
     final second = DateFormat('ss').format(_dateTime);
     final day = DateFormat('EEE, d MMM').format(_dateTime);
 
-    final fontSize = MediaQuery.of(context).size.width / 20.5;
-
     List<Widget> _createCurrentSecondsGridChildren() {
       return new List<Widget>.generate(60, (int index) {
         return Container(
-          // padding: const EdgeInsets.all(8),
-          // child: const Text('0'),
-          color: index >= _dateTime.second ? Color(0xFFAFEFE3) : Color(0xFF15C6A4)
+          color: index >= _dateTime.second ? colors[_Element.bgSecondFuture] : colors[_Element.bgSecond]
         );
       });
     }
@@ -156,9 +164,7 @@ class _GraphCalculatorClockState extends State<GraphCalculatorClock> {
     List<Widget> _createPastSecondsGridChildren() {
       return new List<Widget>.generate(60, (int index) {
         return Container(
-          // padding: const EdgeInsets.all(8),
-          // child: const Text('0'),
-          color: Color(0xFF15C6A4)
+          color: colors[_Element.bgSecond]
         );
       });
     }
@@ -166,9 +172,7 @@ class _GraphCalculatorClockState extends State<GraphCalculatorClock> {
     List<Widget> _createFutureSecondsGridChildren() {
       return new List<Widget>.generate(60, (int index) {
         return Container(
-          // padding: const EdgeInsets.all(8),
-          // child: const Text('0'),
-          color: Color(0xFFAFEFE3),
+          color: colors[_Element.bgSecondFuture],
         );
       });
     }
@@ -213,9 +217,7 @@ class _GraphCalculatorClockState extends State<GraphCalculatorClock> {
     List<Widget> _createMinutesGridChildren() {
       return new List<Widget>.generate(60, (int index) {
         return Container(
-          // padding: const EdgeInsets.all(8),
           child: _buildMinuteChild(index),
-          // color: index >= _dateTime.minute ? Colors.teal[100] : Colors.teal[600],
         );
       });
     }
@@ -231,22 +233,22 @@ class _GraphCalculatorClockState extends State<GraphCalculatorClock> {
 
     Color _getHourTileBg(index) {
       if (index < _dateTime.hour) {
-        return Color(0xFF57595B);
+        return colors[_Element.bgHour];
       }
       if (index == _dateTime.hour) {
-        return Color(0xFF07B494);
+        return colors[_Element.bgHourCurrent];
       }
-      return Color(0xFF848492);
+      return colors[_Element.bgHourFuture];
     }
 
     Color _getHourTileFg(index) {
       if (index < _dateTime.hour) {
-        return Colors.white24; //Colors.indigo[300];
+        return colors[_Element.textHour];
       }
       if (index == _dateTime.hour) {
-        return Color(0xFFAFEFE3);
+        return colors[_Element.textHourCurrent];
       }
-      return Colors.white60;
+      return colors[_Element.textHourFuture];
     }
 
     List<Widget> _createHoursGridChildren() {
@@ -293,15 +295,15 @@ class _GraphCalculatorClockState extends State<GraphCalculatorClock> {
     return Container(
       width: MediaQuery.of(context).size.width,
       child: Column(
-        children: <Widget>[
+        children: [
           Flexible(
             flex: 80,
             child: Row(
-              children: <Widget>[
+              children: [
                 Flexible(
                   flex:60,
                   child: Container(
-                    color: Color(0xFF07B494),
+                    color: colors[_Element.bgMinute],
                     padding: EdgeInsets.all(2),
                     child: minutesGrid,
                   )
@@ -309,14 +311,14 @@ class _GraphCalculatorClockState extends State<GraphCalculatorClock> {
                 Flexible(
                   flex: 25,
                   child: Container(
-                    color: Color(0xFF151319),
+                    color: colors[_Element.bgCalcHeader],
                     child: Column(
-                      children: <Widget>[
+                      children: [
                         Flexible(
                           flex: 10,
                           child: Container(
                             padding: EdgeInsets.only(left: 3, right: 3, top: 8, bottom: 2),
-                            color: Color(0xFF151319),
+                            color: colors[_Element.bgCalcHeader],
                             child: Row(
                               children: [
                                 Expanded(
@@ -329,12 +331,10 @@ class _GraphCalculatorClockState extends State<GraphCalculatorClock> {
                                       minFontSize: 1,
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
-                                        fontFamily: 'Roboto',
                                         fontSize: 200,
                                         fontWeight: FontWeight.w800,
                                         letterSpacing: 0.6,
-                                        // color: Color(0xFF3d5f6d),
-                                        color: Colors.white,
+                                        color: colors[_Element.textDate],
                                       ),
                                     ),
                                   ),
@@ -347,15 +347,14 @@ class _GraphCalculatorClockState extends State<GraphCalculatorClock> {
                         Flexible(
                           flex: 19,
                           child: Container(
-                            padding: EdgeInsets.only(left: 6, right: 6, top: 6, bottom: 5),
-                            color: Color(0xFF151319),
+                            padding: EdgeInsets.only(left: 7, right: 7, top: 6, bottom: 5),
+                            color: colors[_Element.bgCalcHeader],
                             child: Container(
                               padding: EdgeInsets.only(left: 3, right: 3, top: 2, bottom: 4),
                               decoration: BoxDecoration(
-                                color: Color(0xFF9DAA74), //Color(0xFF527D90), // Color(0xFF684C34),
+                                color: colors[_Element.bgLcd],
                                 borderRadius: BorderRadius.all(Radius.circular(2))
                               ),
-                              // color: Color(0xFF9DAA74),
                               child: Column(
                                 children: [
                                   Expanded(
@@ -370,7 +369,7 @@ class _GraphCalculatorClockState extends State<GraphCalculatorClock> {
                                         style: TextStyle(
                                           fontFamily: 'Digital-7 Mono',
                                           fontSize: 200,
-                                          color: Colors.black,
+                                          color: colors[_Element.textLcd],
                                         ),
                                       ),
                                     ),
@@ -386,29 +385,29 @@ class _GraphCalculatorClockState extends State<GraphCalculatorClock> {
                           child: Container(
                             padding: EdgeInsets.only(top: 1, bottom: 7),
                             child: Row(
-                              children: <Widget>[
+                              children: [
                                 Spacer(flex: 24),
                                 Flexible(
                                   flex: 56,
                                   child: Container(
-                                    color: Color(0xFF654C35),
+                                    color: colors[_Element.bgSolar],
                                     child: Column(
                                       children: [
                                         Expanded(
                                           child: Container(
                                             decoration: BoxDecoration(
-                                              color: Color(0xFF866A5E),
+                                              color: colors[_Element.bgSolarDivider],
                                               borderRadius: BorderRadius.all(Radius.circular(2))
                                             ),
                                             child: Row(
                                               crossAxisAlignment: CrossAxisAlignment.center,
                                               mainAxisAlignment: MainAxisAlignment.center,
-                                              children: <Widget>[
+                                              children: [
                                                 Flexible(
                                                   flex: 18,
                                                   child: Container(
                                                     decoration: BoxDecoration(
-                                                      color: Color(0xFF654C35),
+                                                      color: colors[_Element.bgSolar],
                                                       borderRadius: BorderRadius.only(
                                                         topLeft: Radius.circular(2),
                                                         bottomLeft: Radius.circular(2),
@@ -425,7 +424,7 @@ class _GraphCalculatorClockState extends State<GraphCalculatorClock> {
                                                                 return new BoxedIcon(
                                                                   _getWeatherIcon(_condition),
                                                                   size: constraint.biggest.height / 1.7,
-                                                                  color: Colors.white38
+                                                                  color: colors[_Element.textSolar]
                                                                 );
                                                               })
                                                             ),
@@ -440,7 +439,7 @@ class _GraphCalculatorClockState extends State<GraphCalculatorClock> {
                                                   flex: 40,
                                                   child: Container(
                                                     padding: EdgeInsets.only(left: 2, right: 2, top: 0.8),
-                                                    color: Color(0xFF654C35),
+                                                    color: colors[_Element.bgSolar],
                                                     child: Column(
                                                       children: [
                                                         Expanded(
@@ -454,7 +453,7 @@ class _GraphCalculatorClockState extends State<GraphCalculatorClock> {
                                                               textAlign: TextAlign.center,
                                                               style: TextStyle(
                                                                 fontSize: 200,
-                                                                color: Colors.white38,
+                                                                color: colors[_Element.textSolar],
                                                               ),
                                                             ),
                                                           ),
@@ -468,14 +467,13 @@ class _GraphCalculatorClockState extends State<GraphCalculatorClock> {
                                                   flex: 64,
                                                   child: Container(
                                                     decoration: BoxDecoration(
-                                                      color: Color(0xFF654C35),
+                                                      color: colors[_Element.bgSolar],
                                                       borderRadius: BorderRadius.only(
                                                         topRight: Radius.circular(2),
                                                         bottomRight: Radius.circular(2),
                                                       )
                                                     ),
                                                     padding: EdgeInsets.only(left: 2, right: 2, top: 1.5),
-                                                    // color: Color(0xFF654C35),
                                                     child: Column(
                                                       children: [
                                                         Expanded(
@@ -489,7 +487,7 @@ class _GraphCalculatorClockState extends State<GraphCalculatorClock> {
                                                               textAlign: TextAlign.center,
                                                               style: TextStyle(
                                                                 fontSize: 100,
-                                                                color: Colors.white38,
+                                                                color: colors[_Element.textSolar],
                                                               ),
                                                             ),
                                                           ),
@@ -516,7 +514,7 @@ class _GraphCalculatorClockState extends State<GraphCalculatorClock> {
                           flex: 85,
                           child: Container(
                             padding: EdgeInsets.only(left: 3, right: 3, bottom: 3, top: 2),
-                            color: Color(0xFF37353B), //Color(0xFF025472),
+                            color: colors[_Element.bgCalcBody],
                             child: hoursGrid
                           ),
                         )
