@@ -1,7 +1,5 @@
-# Flutter Clock
-
-Welcome to Flutter Clock!
-
-See [flutter.dev/clock](https://flutter.dev/clock) for how to get started, submission requirements, contest rules, and FAQs.
-
-See a [live demo](https://maryx.github.io/flutter_clock) with Flutter for Web!
+<div align="center">
+  <h1>Graph-Calculator Clock</h1>
+  <h5>Time progress graph with hour indication in calculator-like UI! 🕗</h5>
+  <div><img src="graph_calculator_clock/graph_calculator_clock.gif" width="350"></div>
+</div>
