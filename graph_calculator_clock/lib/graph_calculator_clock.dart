@@ -153,7 +153,7 @@ class _GraphCalculatorClockState extends State<GraphCalculatorClock> {
     final second = DateFormat('ss').format(_dateTime);
     final day = DateFormat('EEE, d MMM').format(_dateTime);
 
-    List<Widget> _createCurrentSecondsGridChildren() {
+    List<Widget> _createActiveMinuteGridChildren() {
       return new List<Widget>.generate(60, (int index) {
         return Container(
           color: index >= _dateTime.second ? colors[_Element.bgSecondFuture] : colors[_Element.bgSecond]
@@ -161,60 +161,52 @@ class _GraphCalculatorClockState extends State<GraphCalculatorClock> {
       });
     }
 
-    List<Widget> _createPastSecondsGridChildren() {
+    List<Widget> _createInactiveMinuteGridChildren(color) {
       return new List<Widget>.generate(60, (int index) {
         return Container(
-          color: colors[_Element.bgSecond]
+          color: color,
         );
       });
     }
 
-    List<Widget> _createFutureSecondsGridChildren() {
-      return new List<Widget>.generate(60, (int index) {
-        return Container(
-          color: colors[_Element.bgSecondFuture],
-        );
-      });
-    }
-
-    final secondsGridCurrent = GridView.count(
+    final minuteGridCurrent = GridView.count(
       padding: const EdgeInsets.all(0.5),
       crossAxisSpacing: 1,
       mainAxisSpacing: 1,
       crossAxisCount: 6,
       childAspectRatio: (5 / 4.1),
-      children: _createCurrentSecondsGridChildren(),
+      children: _createActiveMinuteGridChildren(),
     );
 
-    final secondsGridPast = GridView.count(
+    final minuteGridPast = GridView.count(
       padding: const EdgeInsets.all(0.5),
       crossAxisSpacing: 1,
       mainAxisSpacing: 1,
       crossAxisCount: 6,
       childAspectRatio: (5 / 4.1),
-      children: _createPastSecondsGridChildren(),
+      children: _createInactiveMinuteGridChildren(colors[_Element.bgSecond]),
     );
 
-    final secondsGridFuture = GridView.count(
+    final minuteGridFuture = GridView.count(
       padding: const EdgeInsets.all(0.5),
       crossAxisSpacing: 1,
       mainAxisSpacing: 1,
       crossAxisCount: 6,
       childAspectRatio: (5 / 4.1),
-      children: _createFutureSecondsGridChildren(),
+      children: _createInactiveMinuteGridChildren(colors[_Element.bgSecondFuture]),
     );
 
     Widget _buildMinuteChild(index) {
       if (index < _dateTime.minute) {
-        return secondsGridPast;
+        return minuteGridPast;
       }
       if (index == _dateTime.minute) {
-        return secondsGridCurrent;
+        return minuteGridCurrent;
       }
-      return secondsGridFuture;
+      return minuteGridFuture;
     }
 
-    List<Widget> _createMinutesGridChildren() {
+    List<Widget> _createHourGridChildren() {
       return new List<Widget>.generate(60, (int index) {
         return Container(
           child: _buildMinuteChild(index),
@@ -222,13 +214,13 @@ class _GraphCalculatorClockState extends State<GraphCalculatorClock> {
       });
     }
 
-    final minutesGrid = GridView.count(
+    final _hourGrid = GridView.count(
       padding: const EdgeInsets.all(2),
       crossAxisSpacing: 1,
       mainAxisSpacing: 1,
       crossAxisCount: 10,
       childAspectRatio: (6 / 8.5),
-      children: _createMinutesGridChildren(),
+      children: _createHourGridChildren(),
     );
 
     Color _getHourTileBg(index) {
@@ -251,7 +243,7 @@ class _GraphCalculatorClockState extends State<GraphCalculatorClock> {
       return colors[_Element.textHourFuture];
     }
 
-    List<Widget> _createHoursGridChildren() {
+    List<Widget> _createDayGridChildren() {
       return new List<Widget>.generate(24, (int index) {
         return Container(
           padding: EdgeInsets.all(4),
@@ -283,13 +275,189 @@ class _GraphCalculatorClockState extends State<GraphCalculatorClock> {
       });
     }
 
-    final hoursGrid = GridView.count(
+    final _dayGrid = GridView.count(
       padding: const EdgeInsets.all(4),
       crossAxisSpacing: 4,
       mainAxisSpacing: 4,
       crossAxisCount: 4,
       childAspectRatio: (6 / 5.78),
-      children: _createHoursGridChildren(),
+      children: _createDayGridChildren(),
+    );
+
+    final _calculatorLabel = Row(
+      children: [
+        Expanded(
+          child: Align(
+            alignment: Alignment.center,
+            child: AutoSizeText.rich(
+              TextSpan(
+                text: day.toUpperCase(),
+              ),
+              minFontSize: 1,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 200,
+                fontWeight: FontWeight.w800,
+                letterSpacing: 0.6,
+                color: colors[_Element.textDate],
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+
+    final _calculatorLcdDisplay = Container(
+      padding: EdgeInsets.only(left: 3, right: 3, top: 2, bottom: 4),
+      decoration: BoxDecoration(
+        color: colors[_Element.bgLcd],
+        borderRadius: BorderRadius.all(Radius.circular(2))
+      ),
+      child: Column(
+        children: [
+          Expanded(
+            child: Align(
+              alignment: Alignment.center,
+              child: AutoSizeText.rich(
+                TextSpan(
+                  text: '$hour:$minute:$second',
+                ),
+                minFontSize: 1,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontFamily: 'Digital-7 Mono',
+                  fontSize: 200,
+                  color: colors[_Element.textLcd],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+
+    final _calculatorSolarPanel = Row(
+      children: [
+        Spacer(flex: 24),
+        Flexible(
+          flex: 56,
+          child: Container(
+            color: colors[_Element.bgSolar],
+            child: Column(
+              children: [
+                Expanded(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: colors[_Element.bgSolarDivider],
+                      borderRadius: BorderRadius.all(Radius.circular(2))
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Flexible(
+                          flex: 18,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: colors[_Element.bgSolar],
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(2),
+                                bottomLeft: Radius.circular(2),
+                              )
+                            ),
+                            child: Column(
+                              children: [
+                                Expanded(
+                                  child: Padding(
+                                    padding: EdgeInsets.symmetric(horizontal: 2),
+                                    child: Align(
+                                      alignment: Alignment.center,
+                                      child: LayoutBuilder(builder: (context, constraint) {
+                                        return new BoxedIcon(
+                                          _getWeatherIcon(_condition),
+                                          size: constraint.biggest.height / 1.7,
+                                          color: colors[_Element.textSolar]
+                                        );
+                                      })
+                                    ),
+                                  )
+                                )
+                              ]
+                            )
+                          ),
+                        ),
+                        Spacer(flex: 1),
+                        Flexible(
+                          flex: 40,
+                          child: Container(
+                            padding: EdgeInsets.only(left: 2, right: 2, top: 0.8),
+                            color: colors[_Element.bgSolar],
+                            child: Column(
+                              children: [
+                                Expanded(
+                                  child: Align(
+                                    alignment: Alignment.center,
+                                    child: AutoSizeText.rich(
+                                      TextSpan(
+                                        text: _temperature,
+                                      ),
+                                      minFontSize: 1,
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontSize: 200,
+                                        color: colors[_Element.textSolar],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        Spacer(flex: 1),
+                        Flexible(
+                          flex: 64,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: colors[_Element.bgSolar],
+                              borderRadius: BorderRadius.only(
+                                topRight: Radius.circular(2),
+                                bottomRight: Radius.circular(2),
+                              )
+                            ),
+                            padding: EdgeInsets.only(left: 2, right: 2, top: 1.5),
+                            child: Column(
+                              children: [
+                                Expanded(
+                                  child: Align(
+                                    alignment: Alignment.center,
+                                    child: AutoSizeText.rich(
+                                      TextSpan(
+                                        text: _temperatureRange,
+                                      ),
+                                      minFontSize: 1,
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontSize: 100,
+                                        color: colors[_Element.textSolar],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                ),
+              ],
+            ),
+          ),
+        ),
+        Spacer(flex: 4),
+      ],
     );
 
     return Container(
@@ -305,9 +473,10 @@ class _GraphCalculatorClockState extends State<GraphCalculatorClock> {
                   child: Container(
                     color: colors[_Element.bgMinute],
                     padding: EdgeInsets.all(2),
-                    child: minutesGrid,
+                    child: _hourGrid,
                   )
                 ),
+
                 Flexible(
                   flex: 25,
                   child: Container(
@@ -319,28 +488,7 @@ class _GraphCalculatorClockState extends State<GraphCalculatorClock> {
                           child: Container(
                             padding: EdgeInsets.only(left: 3, right: 3, top: 8, bottom: 2),
                             color: colors[_Element.bgCalcHeader],
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: Align(
-                                    alignment: Alignment.center,
-                                    child: AutoSizeText.rich(
-                                      TextSpan(
-                                        text: day.toUpperCase(),
-                                      ),
-                                      minFontSize: 1,
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontSize: 200,
-                                        fontWeight: FontWeight.w800,
-                                        letterSpacing: 0.6,
-                                        color: colors[_Element.textDate],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
+                            child: _calculatorLabel,
                           ),
                         ),
 
@@ -349,34 +497,7 @@ class _GraphCalculatorClockState extends State<GraphCalculatorClock> {
                           child: Container(
                             padding: EdgeInsets.only(left: 7, right: 7, top: 6, bottom: 5),
                             color: colors[_Element.bgCalcHeader],
-                            child: Container(
-                              padding: EdgeInsets.only(left: 3, right: 3, top: 2, bottom: 4),
-                              decoration: BoxDecoration(
-                                color: colors[_Element.bgLcd],
-                                borderRadius: BorderRadius.all(Radius.circular(2))
-                              ),
-                              child: Column(
-                                children: [
-                                  Expanded(
-                                    child: Align(
-                                      alignment: Alignment.center,
-                                      child: AutoSizeText.rich(
-                                        TextSpan(
-                                          text: '$hour:$minute:$second',
-                                        ),
-                                        minFontSize: 1,
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                          fontFamily: 'Digital-7 Mono',
-                                          fontSize: 200,
-                                          color: colors[_Element.textLcd],
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
+                            child: _calculatorLcdDisplay,
                           )
                         ),
 
@@ -384,129 +505,7 @@ class _GraphCalculatorClockState extends State<GraphCalculatorClock> {
                           flex: 8,
                           child: Container(
                             padding: EdgeInsets.only(top: 1, bottom: 7),
-                            child: Row(
-                              children: [
-                                Spacer(flex: 24),
-                                Flexible(
-                                  flex: 56,
-                                  child: Container(
-                                    color: colors[_Element.bgSolar],
-                                    child: Column(
-                                      children: [
-                                        Expanded(
-                                          child: Container(
-                                            decoration: BoxDecoration(
-                                              color: colors[_Element.bgSolarDivider],
-                                              borderRadius: BorderRadius.all(Radius.circular(2))
-                                            ),
-                                            child: Row(
-                                              crossAxisAlignment: CrossAxisAlignment.center,
-                                              mainAxisAlignment: MainAxisAlignment.center,
-                                              children: [
-                                                Flexible(
-                                                  flex: 18,
-                                                  child: Container(
-                                                    decoration: BoxDecoration(
-                                                      color: colors[_Element.bgSolar],
-                                                      borderRadius: BorderRadius.only(
-                                                        topLeft: Radius.circular(2),
-                                                        bottomLeft: Radius.circular(2),
-                                                      )
-                                                    ),
-                                                    child: Column(
-                                                      children: [
-                                                        Expanded(
-                                                          child: Padding(
-                                                            padding: EdgeInsets.symmetric(horizontal: 2),
-                                                            child: Align(
-                                                              alignment: Alignment.center,
-                                                              child: LayoutBuilder(builder: (context, constraint) {
-                                                                return new BoxedIcon(
-                                                                  _getWeatherIcon(_condition),
-                                                                  size: constraint.biggest.height / 1.7,
-                                                                  color: colors[_Element.textSolar]
-                                                                );
-                                                              })
-                                                            ),
-                                                          )
-                                                        )
-                                                      ]
-                                                    )
-                                                  ),
-                                                ),
-                                                Spacer(flex: 1),
-                                                Flexible(
-                                                  flex: 40,
-                                                  child: Container(
-                                                    padding: EdgeInsets.only(left: 2, right: 2, top: 0.8),
-                                                    color: colors[_Element.bgSolar],
-                                                    child: Column(
-                                                      children: [
-                                                        Expanded(
-                                                          child: Align(
-                                                            alignment: Alignment.center,
-                                                            child: AutoSizeText.rich(
-                                                              TextSpan(
-                                                                text: _temperature,
-                                                              ),
-                                                              minFontSize: 1,
-                                                              textAlign: TextAlign.center,
-                                                              style: TextStyle(
-                                                                fontSize: 200,
-                                                                color: colors[_Element.textSolar],
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ),
-                                                Spacer(flex: 1),
-                                                Flexible(
-                                                  flex: 64,
-                                                  child: Container(
-                                                    decoration: BoxDecoration(
-                                                      color: colors[_Element.bgSolar],
-                                                      borderRadius: BorderRadius.only(
-                                                        topRight: Radius.circular(2),
-                                                        bottomRight: Radius.circular(2),
-                                                      )
-                                                    ),
-                                                    padding: EdgeInsets.only(left: 2, right: 2, top: 1.5),
-                                                    child: Column(
-                                                      children: [
-                                                        Expanded(
-                                                          child: Align(
-                                                            alignment: Alignment.center,
-                                                            child: AutoSizeText.rich(
-                                                              TextSpan(
-                                                                text: _temperatureRange,
-                                                              ),
-                                                              minFontSize: 1,
-                                                              textAlign: TextAlign.center,
-                                                              style: TextStyle(
-                                                                fontSize: 100,
-                                                                color: colors[_Element.textSolar],
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          )
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                Spacer(flex: 4),
-                              ],
-                            )
+                            child:  _calculatorSolarPanel,
                           ),
                         ),
 
@@ -515,18 +514,18 @@ class _GraphCalculatorClockState extends State<GraphCalculatorClock> {
                           child: Container(
                             padding: EdgeInsets.only(left: 3, right: 3, bottom: 3, top: 2),
                             color: colors[_Element.bgCalcBody],
-                            child: hoursGrid
+                            child: _dayGrid,
                           ),
-                        )
+                        ),
                       ],
-                    )
+                    ),
                   ),
                 ),
               ],
             ),
           ),
         ],
-      )
+      ),
     );
   }
 }
